@@ -8,19 +8,25 @@ public class Main {
 
     public static void main(String[] args) {
         CountDownLatch cdl = new CountDownLatch(25);
+        CountDownLatch cdl2 = new CountDownLatch(10);
         Semaphore sem = new Semaphore(3);
         Uploader uploader = new Uploader(cdl);
         uploader.start();
         try {
             cdl.await();
             for (int i = 1; i <= 10; i++) {
-                Downloaders downloaders = new Downloaders(sem, i);
+                Downloaders downloaders = new Downloaders(sem, cdl2, i);
                 downloaders.start();
+
             }
+            cdl2.await();
+            System.out.println("Файл удален с сервера");
 
         } catch (InterruptedException e) {
 
         }
+
+
     }
 
 }
